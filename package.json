@@ -1,0 +1,20 @@
+{
+  "name": "todolist",
+  "version": "1.0.0",
+  "description": "todolist backend api",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cgh20xx/node-todolist.git"
+  },
+  "author": "Hank Hsiao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cgh20xx/node-todolist/issues"
+  },
+  "homepage": "https://github.com/cgh20xx/node-todolist#readme"
+}
