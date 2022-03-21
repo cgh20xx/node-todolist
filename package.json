@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "nodemon": "nodemon"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/cgh20xx/node-todolist/issues"
   },
-  "homepage": "https://github.com/cgh20xx/node-todolist#readme"
+  "homepage": "https://github.com/cgh20xx/node-todolist#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
 }
