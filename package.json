@@ -20,5 +20,8 @@
   "homepage": "https://github.com/cgh20xx/node-todolist#readme",
   "devDependencies": {
     "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "uuid": "^8.3.2"
   }
 }
