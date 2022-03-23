@@ -98,7 +98,6 @@ const requestListener = (req, res) => {
         const id = req.url.split('/').pop();
         // 檢查 todos 有無該筆 id 資料，有才能更新，沒有則回應錯誤
         const index = todos.findIndex((todo) => todo.id === id);
-        console.log(id, index);
         // 多判斷 title 是否為字串
         if (title !== undefined && typeof title === 'string' && index !== -1) {
           todos[index].title = title;
@@ -134,4 +133,7 @@ const requestListener = (req, res) => {
 };
 
 const server = http.createServer(requestListener);
-server.listen(8080);
+server.listen(process.env.PORT || 8080);
+
+// precess.env.PORT 為 heroku 環境的 PORT，本機不會有
+// package.json 也要設定 "engines": { "node": "16.x"} 因 heroku 會依此設定使用 node 版本
