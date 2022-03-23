@@ -5,7 +5,7 @@ function errHandler(res) {
   res.write(
     JSON.stringify({
       status: 'false',
-      message: '參數格式錯誤',
+      message: '參數格式錯誤，或無此id',
     })
   );
   res.end();

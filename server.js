@@ -4,7 +4,7 @@ const headers = require('./headers'); // 自己寫的 headers 模組
 const errHandler = require('./errHandler'); // 自己寫的 errHandler 模組
 const todos = [];
 
-const requestListener = async (req, res) => {
+const requestListener = (req, res) => {
   // Node.js 官網接收 buffer 教學 https://nodejs.org/api/stream.html#api-for-stream-consumers
   // Node.js 開發者社群 - 各種原生與套件，接收 req.body 的方式 https://nodejs.dev/learn/get-http-request-body-data-using-nodejs
 
@@ -21,6 +21,7 @@ const requestListener = async (req, res) => {
   // }
   // const data = Buffer.concat(buffers).toString();
   // console.log('data:', data);
+  // console.log(req.url);
 
   if (req.url === '/todos' && req.method === 'GET') {
     res.writeHead(200, headers);
@@ -32,6 +33,7 @@ const requestListener = async (req, res) => {
     );
     res.end();
   } else if (req.url === '/todos' && req.method === 'POST') {
+    // 因 POST 要接收使用者傳的 body 資料，所以要偵聽 end event
     req.on('end', () => {
       try {
         // 接受別人傳入的資料一定要 try catch
@@ -58,7 +60,38 @@ const requestListener = async (req, res) => {
         errHandler(res);
       }
     });
+  } else if (req.url === '/todos' && req.method === 'DELETE') {
+    todos.length = 0;
+    res.writeHead(200, headers);
+    res.write(
+      JSON.stringify({
+        status: 'success',
+        data: todos,
+        delete: 'yes',
+      })
+    );
+    res.end();
+  } else if (req.url.startsWith('/todos/') && req.method === 'DELETE') {
+    // 先取得 id
+    const deleteId = req.url.split('/').pop();
+    // 檢查 todos 有無該筆 id 資料，有才能刪除，沒有則回應錯誤
+    const deleteIndex = todos.findIndex((todo) => todo.id === deleteId);
+    if (deleteIndex !== -1) {
+      // 刪除該筆資料
+      todos.splice(deleteIndex, 1);
+      res.writeHead(200, headers);
+      res.write(
+        JSON.stringify({
+          status: 'success',
+          data: todos,
+        })
+      );
+      res.end();
+    } else {
+      errHandler(res);
+    }
   } else if (req.method === 'OPTIONS') {
+    res.writeHead(200, headers);
     res.write('options');
     res.end();
   } else {
