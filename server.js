@@ -67,18 +67,17 @@ const requestListener = (req, res) => {
       JSON.stringify({
         status: 'success',
         data: todos,
-        delete: 'yes',
       })
     );
     res.end();
   } else if (req.url.startsWith('/todos/') && req.method === 'DELETE') {
     // 先取得 id
-    const deleteId = req.url.split('/').pop();
+    const id = req.url.split('/').pop();
     // 檢查 todos 有無該筆 id 資料，有才能刪除，沒有則回應錯誤
-    const deleteIndex = todos.findIndex((todo) => todo.id === deleteId);
-    if (deleteIndex !== -1) {
+    const index = todos.findIndex((todo) => todo.id === id);
+    if (index !== -1) {
       // 刪除該筆資料
-      todos.splice(deleteIndex, 1);
+      todos.splice(index, 1);
       res.writeHead(200, headers);
       res.write(
         JSON.stringify({
@@ -90,6 +89,34 @@ const requestListener = (req, res) => {
     } else {
       errHandler(res);
     }
+  } else if (req.url.startsWith('/todos/') && req.method === 'PATCH') {
+    // 因 PATCH 要接收使用者傳的 body 資料，所以要偵聽 end event
+    req.on('end', () => {
+      try {
+        // 接受別人傳入的資料一定要 try catch
+        const title = JSON.parse(body).title;
+        const id = req.url.split('/').pop();
+        // 檢查 todos 有無該筆 id 資料，有才能更新，沒有則回應錯誤
+        const index = todos.findIndex((todo) => todo.id === id);
+        console.log(id, index);
+        // 多判斷 title 是否為字串
+        if (title !== undefined && typeof title === 'string' && index !== -1) {
+          todos[index].title = title;
+          res.writeHead(200, headers);
+          res.write(
+            JSON.stringify({
+              status: 'success',
+              data: todos,
+            })
+          );
+          res.end();
+        } else {
+          errHandler(res);
+        }
+      } catch (err) {
+        errHandler(res);
+      }
+    });
   } else if (req.method === 'OPTIONS') {
     res.writeHead(200, headers);
     res.write('options');
