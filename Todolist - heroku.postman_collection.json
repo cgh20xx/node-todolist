@@ -1,0 +1,129 @@
+{
+	"info": {
+		"_postman_id": "b712113e-c610-4ab6-9ce4-507eae105770",
+		"name": "Todolist - heroku",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "取有所有資料",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://vast-bayou-05602.herokuapp.com/todos",
+					"protocol": "https",
+					"host": [
+						"vast-bayou-05602",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "新增單筆資料",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"新增測試1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vast-bayou-05602.herokuapp.com/todos",
+					"protocol": "https",
+					"host": [
+						"vast-bayou-05602",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "刪除所有資料",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://vast-bayou-05602.herokuapp.com/todos",
+					"protocol": "https",
+					"host": [
+						"vast-bayou-05602",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "刪除單筆資料",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://vast-bayou-05602.herokuapp.com/todos/aa1b5cdd-5691-4fdd-ac1d-06d0b9027",
+					"protocol": "https",
+					"host": [
+						"vast-bayou-05602",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"todos",
+						"aa1b5cdd-5691-4fdd-ac1d-06d0b9027"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "更新單筆資料",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"更新資料\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vast-bayou-05602.herokuapp.com/todos/a178a1f3-24a6-4f2c-8d19-c1495bf21028",
+					"protocol": "https",
+					"host": [
+						"vast-bayou-05602",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"todos",
+						"a178a1f3-24a6-4f2c-8d19-c1495bf21028"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
