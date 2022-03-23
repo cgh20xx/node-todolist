@@ -1,16 +1,10 @@
-const http = require('http');
-const { v4: uuidv4 } = require('uuid');
+const http = require('http'); // node 內建模組
+const { v4: uuidv4 } = require('uuid'); // 第三方模組
+const headers = require('./headers'); // 自己寫的 headers 模組
+const errHandler = require('./errHandler'); // 自己寫的 errHandler 模組
 const todos = [];
 
 const requestListener = async (req, res) => {
-  const headers = {
-    'Access-Control-Allow-Headers':
-      'Content-Type, Authorization, Content-Length, X-Requested-With',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'PATCH, POST, GET, OPTIONS, DELETE',
-    'Content-Type': 'application/json',
-  };
-
   // Node.js 官網接收 buffer 教學 https://nodejs.org/api/stream.html#api-for-stream-consumers
   // Node.js 開發者社群 - 各種原生與套件，接收 req.body 的方式 https://nodejs.dev/learn/get-http-request-body-data-using-nodejs
 
@@ -56,27 +50,12 @@ const requestListener = async (req, res) => {
               data: todos,
             })
           );
-        } else {
-          res.writeHead(400, headers);
-          res.write(
-            JSON.stringify({
-              status: 'false',
-              message: '參數格式錯誤',
-            })
-          );
           res.end();
+        } else {
+          errHandler(res);
         }
-
-        res.end();
       } catch (err) {
-        res.writeHead(400, headers);
-        res.write(
-          JSON.stringify({
-            status: 'false',
-            message: '參數格式錯誤',
-          })
-        );
-        res.end();
+        errHandler(res);
       }
     });
   } else if (req.method === 'OPTIONS') {
