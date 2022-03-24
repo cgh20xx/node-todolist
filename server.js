@@ -7,21 +7,11 @@ const todos = [];
 const requestListener = (req, res) => {
   // Node.js 官網接收 buffer 教學 https://nodejs.org/api/stream.html#api-for-stream-consumers
   // Node.js 開發者社群 - 各種原生與套件，接收 req.body 的方式 https://nodejs.dev/learn/get-http-request-body-data-using-nodejs
-
   // 接收 request body 資料。 chunk 為 Buffer 物件
   let body = '';
   req.on('data', (chunk) => {
     body += chunk;
   });
-
-  // Node.js V10 的新寫法
-  // const buffers = [];
-  // for await (const chunk of req) {
-  //   buffers.push(chunk);
-  // }
-  // const data = Buffer.concat(buffers).toString();
-  // console.log('data:', data);
-  // console.log(req.url);
 
   if (req.url === '/todos' && req.method === 'GET') {
     res.writeHead(200, headers);
@@ -134,6 +124,6 @@ const requestListener = (req, res) => {
 
 const server = http.createServer(requestListener);
 server.listen(process.env.PORT || 8080);
-
+// heroku node.js 設定參考：https://devcenter.heroku.com/articles/deploying-nodejs#specify-the-version-of-node
 // precess.env.PORT 為 heroku 環境的 PORT，本機不會有
 // package.json 也要設定 "engines": { "node": "16.x"} 因 heroku 會依此設定使用 node 版本
