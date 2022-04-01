@@ -37,10 +37,10 @@ const requestListener = (req, res) => {
       patchTodo(req, res, { body: body });
     });
   } else if (req.method === 'OPTIONS') {
-    responseHandler(req, resType.OPTIONS);
+    responseHandler(res, resType.OPTIONS);
   } else {
     // 找不到路由
-    responseHandler(req, resType.PAGE_NOT_FOUND);
+    responseHandler(res, resType.PAGE_NOT_FOUND);
   }
 };
 
