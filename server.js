@@ -1,8 +1,10 @@
 const http = require('http'); // node 內建模組
-const { v4: uuidv4 } = require('uuid'); // 第三方模組
-const headers = require('./headers'); // 自己寫的 headers 模組
-const errHandler = require('./errHandler'); // 自己寫的 errHandler 模組
-const todos = [];
+const getTodo = require('./get-todo');
+const postTodo = require('./post-todo');
+const deleteTodo = require('./delete-todo');
+const patchTodo = require('./patch-todo');
+const responseHandler = require('./response-handler');
+const resType = require('./response-type');
 
 const requestListener = (req, res) => {
   // Node.js 官網接收 buffer 教學 https://nodejs.org/api/stream.html#api-for-stream-consumers
@@ -12,113 +14,33 @@ const requestListener = (req, res) => {
   req.on('data', (chunk) => {
     body += chunk;
   });
-
   if (req.url === '/todos' && req.method === 'GET') {
-    res.writeHead(200, headers);
-    res.write(
-      JSON.stringify({
-        status: 'success',
-        data: todos,
-      })
-    );
-    res.end();
+    // 取得所有資料
+    getTodo(req, res);
   } else if (req.url === '/todos' && req.method === 'POST') {
-    // 因 POST 要接收使用者傳的 body 資料，所以要偵聽 end event
+    // 新增單筆資料
     req.on('end', () => {
-      try {
-        // 接受別人傳入的資料一定要 try catch
-        const title = JSON.parse(body).title;
-        // 多判斷 title 是否為字串
-        if (title !== undefined && typeof title === 'string') {
-          const todo = {
-            id: uuidv4(),
-            title: title,
-          };
-          todos.push(todo);
-          res.writeHead(200, headers);
-          res.write(
-            JSON.stringify({
-              status: 'success',
-              data: todos,
-            })
-          );
-          res.end();
-        } else {
-          errHandler(res);
-        }
-      } catch (err) {
-        errHandler(res);
-      }
+      // 因 POST 要接收使用者傳的 body 資料，所以要偵聽 end event
+      postTodo(req, res, { body: body });
     });
   } else if (req.url === '/todos' && req.method === 'DELETE') {
-    todos.length = 0;
-    res.writeHead(200, headers);
-    res.write(
-      JSON.stringify({
-        status: 'success',
-        data: todos,
-      })
-    );
-    res.end();
+    // 刪除所有資料
+    deleteTodo(req, res);
   } else if (req.url.startsWith('/todos/') && req.method === 'DELETE') {
-    // 先取得 id
+    // 刪除單筆資料
     const id = req.url.split('/').pop();
-    // 檢查 todos 有無該筆 id 資料，有才能刪除，沒有則回應錯誤
-    const index = todos.findIndex((todo) => todo.id === id);
-    if (index !== -1) {
-      // 刪除該筆資料
-      todos.splice(index, 1);
-      res.writeHead(200, headers);
-      res.write(
-        JSON.stringify({
-          status: 'success',
-          data: todos,
-        })
-      );
-      res.end();
-    } else {
-      errHandler(res);
-    }
+    deleteTodo(req, res, { id: id });
   } else if (req.url.startsWith('/todos/') && req.method === 'PATCH') {
-    // 因 PATCH 要接收使用者傳的 body 資料，所以要偵聽 end event
+    // 更新單筆資料
     req.on('end', () => {
-      try {
-        // 接受別人傳入的資料一定要 try catch
-        const title = JSON.parse(body).title;
-        const id = req.url.split('/').pop();
-        // 檢查 todos 有無該筆 id 資料，有才能更新，沒有則回應錯誤
-        const index = todos.findIndex((todo) => todo.id === id);
-        // 多判斷 title 是否為字串
-        if (title !== undefined && typeof title === 'string' && index !== -1) {
-          todos[index].title = title;
-          res.writeHead(200, headers);
-          res.write(
-            JSON.stringify({
-              status: 'success',
-              data: todos,
-            })
-          );
-          res.end();
-        } else {
-          errHandler(res);
-        }
-      } catch (err) {
-        errHandler(res);
-      }
+      // 因 PATCH 要接收使用者傳的 body 資料，所以要偵聽 end event
+      patchTodo(req, res, { body: body });
     });
   } else if (req.method === 'OPTIONS') {
-    res.writeHead(200, headers);
-    res.write('options');
-    res.end();
+    responseHandler(req, resType.OPTIONS);
   } else {
-    res.writeHead(404, headers);
-    res.write(
-      JSON.stringify({
-        status: 'false',
-        mess: 'page not found',
-      })
-    );
-    res.end();
+    // 找不到路由
+    responseHandler(req, resType.PAGE_NOT_FOUND);
   }
 };
 
